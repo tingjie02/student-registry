@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Http\Resources\StudentResource;
 
 class StudentController extends Controller
 {
@@ -14,7 +15,7 @@ class StudentController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $students = Student::paginate($perPage);
-        return response()->json($students);
+        return StudentResource::collection($students);
     }
 
     /**
