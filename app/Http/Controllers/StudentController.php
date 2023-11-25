@@ -10,9 +10,11 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Student::all();
+        $perPage = $request->input('per_page', 10);
+        $students = Student::paginate($perPage);
+        return response()->json($students);
     }
 
     /**
