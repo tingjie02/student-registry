@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('students/search', [StudentController::class, 'search'])->name('students.search');
     Route::apiResource('students', StudentController::class);
 });
 

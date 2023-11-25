@@ -66,4 +66,24 @@ class StudentController extends Controller
         Student::destroy($id);
         return response()->json(null, 204);
     }
+
+    public function search(Request $request)
+    {
+        $name = $request->input('name');
+        $email = $request->input('email');
+
+        $query = Student::query();
+
+        if ($name) {
+            $query->where('name', '=', $name);
+        }
+
+        if ($email) {
+            $query->orWhere('email', '=', $email);
+        }
+
+        $students = $query->get();
+
+        return response()->json($students);
+    }
 }
