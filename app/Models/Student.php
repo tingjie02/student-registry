@@ -13,6 +13,7 @@ class Student extends Model
 
     public function setEmailAttribute($value)
     {
+        // Set email attribute to lowercase
         $this->attributes['email'] = strtolower(trim($value));
     }
 }

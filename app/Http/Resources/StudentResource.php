@@ -14,6 +14,7 @@ class StudentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Return Name and Address only
         return [
             'name' => $this->name,
             'address' => $this->address,

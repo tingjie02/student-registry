@@ -20,12 +20,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Group of routes that require API authentication
 Route::middleware('auth:api')->group(function () {
+    // Search for students.
     Route::get('students/search', [StudentController::class, 'search'])->name('students.search');
+    // Import students from a file.
     Route::post('students/import', [StudentController::class, 'import']);
+    // Delete a student
     Route::delete('students/{id?}', [StudentController::class, 'destroy']);
+    // RESTful API routes for student resource.
     Route::apiResource('students', StudentController::class);
 });
 
+// Register and login routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

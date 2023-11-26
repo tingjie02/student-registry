@@ -20,13 +20,19 @@ class StudentsImport implements ToModel, WithHeadingRow, SkipsOnError
 
     use Importable, SkipsFailures;
 
+    // Store errors
     private $errors = [];
 
+    /**
+     * Process an Excel row into a Student model instance.
+     */
     public function model(array $row)
     {
         try {
+            // Get action
             $action = strtolower(trim($row['action'] ?? ''));
 
+            // Check action
             switch ($action) {
                 case 'create':
                     return $this->createStudent($row);
@@ -44,6 +50,7 @@ class StudentsImport implements ToModel, WithHeadingRow, SkipsOnError
         }
     }
 
+    // Method to create a student.
     private function createStudent($row)
     {
         try {
@@ -58,6 +65,7 @@ class StudentsImport implements ToModel, WithHeadingRow, SkipsOnError
         }
     }
 
+    // Method to update a student.
     private function updateStudent($row)
     {
         try {
@@ -75,6 +83,7 @@ class StudentsImport implements ToModel, WithHeadingRow, SkipsOnError
         }
     }
 
+    // Method to delete a student.
     private function deleteStudent($row)
     {
         try {
@@ -84,11 +93,17 @@ class StudentsImport implements ToModel, WithHeadingRow, SkipsOnError
         }
     }
 
+    /**
+     * Handles errors encountered during the import process.
+     */
     public function onError(Throwable $e)
     {
         $this->errors[] = $e->getMessage();
     }
 
+    /**
+     * Returns errors encountered during the import process.
+     */
     public function getErrors()
     {
         return $this->errors;
