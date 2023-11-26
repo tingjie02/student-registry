@@ -10,9 +10,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10);
@@ -20,56 +17,61 @@ class StudentController extends Controller
         return StudentResource::collection($students);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $student = Student::create($request->all());
-        return response()->json($student, 201);
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|max:255|email|unique:students,email',
+            'address' => 'required',
+            'study_course' => 'required|max:255',
+        ]);
+
+        $validatedData['email'] = strtolower($validatedData['email']);
+
+        $student = Student::create($validatedData);
+        return new StudentResource($student);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        return Student::find($id);
+        $student = Student::find($id);
+        return new StudentResource($student);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $student = Student::findOrFail($id);
+        $validatedData = $request->validate([
+            'name' => 'string|max:255',
+            'email' => 'email|max:255|unique:students,email,'.$id,
+            'address' => 'string',
+            'study_course' => 'string|max:255',
+        ]);
+
+        if(isset($validatedData['email'])) {
+            $validatedData['email'] = strtolower($validatedData['email']);
+        }
+
+        $student = Student::find($id);
+
+        if (!$student) {
+            return response()->json(['status' => 'error', 'message' => 'Student not found'], 404);
+        }
+
         $student->update($request->all());
-        return response()->json($student, 200);
+        return new StudentResource($student);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Request $request, $id = null)
     {
-        Student::destroy($id);
-        return response()->json(null, 204);
+        if ($id) {
+            return $this->attemptDeletion(['id' => $id]);
+        }
+
+        if ($email = $request->query('email')) {
+            return $this->attemptDeletion(['email' => $email]);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'No deletion criteria provided'], 400);
     }
 
     public function search(Request $request)
@@ -84,12 +86,11 @@ class StudentController extends Controller
         }
 
         if ($email) {
-            $query->orWhere('email', '=', $email);
+            $query->orWhere('email', '=', strtolower($email));
         }
 
         $students = $query->get();
-
-        return response()->json($students, 200);
+        return StudentResource::collection($students);
     }
 
     public function import(Request $request)
@@ -98,8 +99,45 @@ class StudentController extends Controller
             'file' => 'required|file|mimes:xlsx,csv'
         ]);
 
-        Excel::import(new StudentsImport, $request->file('file'));
+        $import = new StudentsImport();
 
-        return response()->json(['message' => 'Students imported successfully'], 200);
+        try {
+            Excel::import($import, $request->file('file'));
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation errors in the import process',
+                'errors' => $failures
+            ], 422);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'There was an error in the import process',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+
+        if (!empty($import->getErrors())) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'There were errors in the import process',
+                'errors' => $import->getErrors()
+            ], 422);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Imported successfully'], 200);
+    }
+
+    private function attemptDeletion($query)
+    {
+        $student = Student::where($query)->first();
+
+        if (!$student) {
+            return response()->json(['status' => 'error', 'message' => 'Student not found'], 404);
+        }
+
+        $student->delete();
+        return response()->json(['status' => 'success', 'message' => 'Deleted successfully'], 200);
     }
 }

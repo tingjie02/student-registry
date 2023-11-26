@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:api')->group(function () {
     Route::get('students/search', [StudentController::class, 'search'])->name('students.search');
     Route::post('students/import', [StudentController::class, 'import']);
+    Route::delete('students/{id?}', [StudentController::class, 'destroy']);
     Route::apiResource('students', StudentController::class);
 });
 

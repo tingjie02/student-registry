@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->text('address');
             $table->string('study_course');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
