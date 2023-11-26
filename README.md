@@ -1,11 +1,30 @@
 # Student Registry
 
-## Command to start the server
+## Command to start the server (Debian/Ubuntu)
+### Downloading Docker
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 docker run --network host --name mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=laravel -e MYSQL_USER=laravel -e MYSQL_PASSWORD=laravel -d mysql:latest
+```
 
+### Clone Project
+```bash
+apt install git
+git clone https://github.com/tingjie02/student-registry.git
+```
+
+### Copy and Edit .env
+```bash
+cp .env.example .env
+nano .env
+```
+Change to
+DB_USERNAME=laravel
+DB_PASSWORD=laravel
+
+### Laravel Setup
+```bash
 composer update
 composer install
 php artisan migrate
@@ -23,9 +42,11 @@ https://api.postman.com/collections/21268617-56a31338-849a-41cc-b3d0-3a3c0377ee3
 
 [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38%26entityType%3Dcollection%26workspaceId%3D6de691bf-e43d-46d1-87a7-9aa4edffb390)
 
-## YouTube
+## Video
 
 https://www.youtube.com/watch?v=UZBJSeONmu0
+
+https://github.com/tingjie02/student-registry/assets/59902360/5bfd6400-ba11-4dd0-a76b-850d9e5f3fde
 
 ##
 
