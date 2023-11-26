@@ -1,3 +1,34 @@
+# Student Registry
+
+## Command to start the server
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+docker run --network host --name mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=laravel -e MYSQL_USER=laravel -e MYSQL_PASSWORD=laravel -d mysql:latest
+
+composer update
+composer install
+php artisan migrate
+php artisan key:generate
+php artisan passport:install --force
+php artisan serve --host=0.0.0.0
+```
+
+## Postman
+https://www.postman.com/s19124593/workspace/public-workspace/collection/21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38?action=share&creator=21268617
+
+https://elements.getpostman.com/redirect?entityId=21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38&entityType=collection
+
+https://api.postman.com/collections/21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38?access_key=PMAT-01HG61S8Z874BRQDWCXQWSC9PH
+
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D21268617-56a31338-849a-41cc-b3d0-3a3c0377ee38%26entityType%3Dcollection%26workspaceId%3D6de691bf-e43d-46d1-87a7-9aa4edffb390)
+
+## YouTube
+
+https://www.youtube.com/watch?v=UZBJSeONmu0
+
+##
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
